@@ -1,5 +1,0 @@
-name: Monster Quest
-machine_name: monster_quest
-version: 0.0.1
-requirements:
-  - trainer:>=0.0.1

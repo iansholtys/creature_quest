@@ -1,0 +1,5 @@
+name: Creature Quest
+machine_name: creature_quest
+version: 0.0.1
+requirements:
+  - trainer:>=0.0.1
