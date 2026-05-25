@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Creature Quest Skill Creator Test</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #10131a;
+      --panel: #171c26;
+      --panel-strong: #202838;
+      --ink: #f4f7fb;
+      --muted: #9ba8ba;
+      --line: #30394a;
+      --accent: #8bd3ff;
+      --accent-2: #ffd166;
+      --danger: #ff8a8a;
+      --good: #8ee6a8;
+      --shadow: 0 18px 50px rgb(0 0 0 / 35%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgb(139 211 255 / 18%), transparent 34rem),
+        radial-gradient(circle at bottom right, rgb(255 209 102 / 12%), transparent 30rem),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0;
+    }
+
+    header {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 4.7rem);
+      letter-spacing: -0.08em;
+      line-height: 0.9;
+      max-width: 760px;
+    }
+
+    header p {
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 1%)), var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .builder {
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .section {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      background: rgb(255 255 255 / 2%);
+      border: 1px solid rgb(255 255 255 / 7%);
+      border-radius: 18px;
+    }
+
+    .section h2 {
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    label,
+    .field-label {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      color: var(--ink);
+      background: #0d1119;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 13px;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgb(139 211 255 / 14%);
+    }
+
+    input[type="range"] {
+      padding: 0;
+      accent-color: var(--accent);
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .check-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0d1119;
+    }
+
+    .check-row input {
+      width: auto;
+    }
+
+    .check-row span {
+      color: var(--ink);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    .summary {
+      position: sticky;
+      top: 18px;
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .skill-title {
+      display: grid;
+      gap: 8px;
+      padding: 18px;
+      background: linear-gradient(135deg, rgb(139 211 255 / 14%), rgb(255 209 102 / 9%));
+      border-radius: 18px;
+      border: 1px solid rgb(255 255 255 / 9%);
+    }
+
+    .skill-title h2 {
+      font-size: 1.5rem;
+      letter-spacing: -0.03em;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      background: rgb(255 255 255 / 8%);
+      border: 1px solid rgb(255 255 255 / 9%);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 13px;
+      background: #0d1119;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .notice-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .notice {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgb(255 255 255 / 9%);
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .notice.good {
+      color: var(--good);
+      background: rgb(142 230 168 / 9%);
+      border-color: rgb(142 230 168 / 22%);
+    }
+
+    .notice.warn {
+      color: var(--accent-2);
+      background: rgb(255 209 102 / 9%);
+      border-color: rgb(255 209 102 / 22%);
+    }
+
+    .notice.danger {
+      color: var(--danger);
+      background: rgb(255 138 138 / 9%);
+      border-color: rgb(255 138 138 / 22%);
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 0;
+      padding: 14px;
+      max-height: 340px;
+      overflow: auto;
+      background: #0d1119;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      color: #d7e7f7;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .formula {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    .formula code {
+      color: var(--ink);
+      background: rgb(255 255 255 / 7%);
+      border-radius: 6px;
+      padding: 2px 5px;
+    }
+
+    @media (max-width: 920px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        position: static;
+      }
+    }
+
+    @media (max-width: 620px) {
+      main {
+        width: min(100% - 20px, 1180px);
+        padding: 24px 0;
+      }
+
+      .grid,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .builder,
+      .summary,
+      .section {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Skill Creator Balance Test</h1>
+      <p>
+        A throwaway HTML test page for checking whether skill values feel sensible against the rules in
+        <a href="../docs/skills.md">skills.md</a>, plus type and ability pairings from the rest of the docs.
+      </p>
+    </header>
+
+    <div class="layout">
+      <form class="card builder" id="skillForm">
+        <section class="section">
+          <h2>Identity</h2>
+          <div class="grid">
+            <label>
+              Skill Name
+              <input id="name" name="name" value="Tide Lash" autocomplete="off">
+            </label>
+            <label>
+              Tier
+              <select id="tier" name="tier"></select>
+            </label>
+            <label>
+              Type
+              <select id="type" name="type"></select>
+            </label>
+            <label>
+              Target
+              <select id="target" name="target"></select>
+            </label>
+          </div>
+          <label>
+            Description
+            <textarea id="description" name="description">A testing skill generated from documented builder values.</textarea>
+          </label>
+        </section>
+
+        <section class="section">
+          <h2>Builder Stages</h2>
+          <div class="grid">
+            <label>
+              ATP Stages <span id="atpStageValue">0</span>
+              <input id="atpStages" name="atpStages" type="range" min="0" max="12" value="2">
+            </label>
+            <label>
+              ACC Boost Stages <span id="accStageValue">0</span>
+              <input id="accStages" name="accStages" type="range" min="0" max="6" value="1">
+            </label>
+            <label>
+              Faster ATT Stages <span id="attSpeedStageValue">0</span>
+              <input id="attSpeedStages" name="attSpeedStages" type="range" min="0" max="3" value="0">
+            </label>
+            <label>
+              SKL Uses <span id="skillLevelValue">0</span>
+              <input id="skillLevel" name="skillLevel" type="range" min="0" max="500" value="0">
+            </label>
+          </div>
+          <label class="field-label">
+            Ability
+            <span class="check-row">
+              <input id="hasAbility" name="hasAbility" type="checkbox" checked>
+              <span>Add type signature ability for one improvement cost stage</span>
+            </span>
+          </label>
+        </section>
+
+        <section class="section">
+          <h2>Stage Payments</h2>
+          <div class="grid">
+            <label>
+              ATP Stages Paid by ACC <span id="atpAccPaymentValue">0</span>
+              <input id="atpAccPayment" name="atpAccPayment" type="range" min="0" max="12" value="0">
+            </label>
+            <label>
+              ATP Stages Paid by ATT <span id="atpAttPaymentValue">0</span>
+              <input id="atpAttPayment" name="atpAttPayment" type="range" min="0" max="12" value="0">
+            </label>
+            <label>
+              ACC Boost Stages Paid by ACC <span id="accAccPaymentValue">0</span>
+              <input id="accAccPayment" name="accAccPayment" type="range" min="0" max="6" value="0">
+            </label>
+            <label>
+              ACC Boost Stages Paid by ATT <span id="accAttPaymentValue">0</span>
+              <input id="accAttPayment" name="accAttPayment" type="range" min="0" max="6" value="0">
+            </label>
+            <label>
+              Faster ATT Stages Paid by ACC <span id="attAccPaymentValue">0</span>
+              <input id="attAccPayment" name="attAccPayment" type="range" min="0" max="3" value="0">
+            </label>
+            <label>
+              Target Stages Paid by ACC <span id="targetAccPaymentValue">0</span>
+              <input id="targetAccPayment" name="targetAccPayment" type="range" min="0" max="3" value="0">
+            </label>
+            <label>
+              Ability Payment
+              <select id="abilityPayment" name="abilityPayment">
+                <option value="sp">Pay with SP Cost</option>
+                <option value="acc">Pay with Accuracy</option>
+                <option value="att">Pay with +20 ATT</option>
+              </select>
+            </label>
+          </div>
+          <p class="formula">
+            Stages not paid by ACC or slower ATT are paid by SP cost. Each ACC-paid stage applies a 15 ACC penalty.
+            Each ATT-paid stage increases attack time by 20.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2>Damage Split</h2>
+          <label>
+            Attack Ratio <span id="attackRatioValue">50% Physical / 50% Special</span>
+            <input id="attackRatio" name="attackRatio" type="range" min="0" max="100" value="50" step="5">
+          </label>
+          <p class="formula">
+            Per docs, <code>ATR 100%</code> is fully Physical and <code>ATR 0%</code> is fully Special.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2>Assumptions</h2>
+          <p class="formula">
+            Base ATP, ACC, ATT, and SP come from tier defaults. ATP stages add tier ATP. ACC boost stages add 10 ACC.
+            Faster ATT stages reduce attack time by 20 and can be paid by SP cost or ACC penalties.
+            ATP stages, ACC boost stages, and abilities can each be paid by SP cost, ACC penalties, or slower attack time.
+            SKL bonuses use <code>0.04 x SKL</code> for ATP/ACC and reduce SP by up to 50%.
+          </p>
+        </section>
+      </form>
+
+      <aside class="card summary" aria-live="polite">
+        <div class="skill-title">
+          <h2 id="summaryName">Tide Lash</h2>
+          <div class="chips" id="summaryChips"></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><strong id="finalAtp">0</strong><span>Final ATP</span></div>
+          <div class="stat"><strong id="finalAcc">0%</strong><span>Final ACC</span></div>
+          <div class="stat"><strong id="finalAtt">80</strong><span>Final ATT</span></div>
+          <div class="stat"><strong id="finalSp">0</strong><span>Final SP Cost</span></div>
+          <div class="stat"><strong id="finalAtr">0/0</strong><span>Physical/Special</span></div>
+          <div class="stat"><strong id="baseAtp">0</strong><span>Base ATP</span></div>
+          <div class="stat"><strong id="baseAcc">0%</strong><span>Base ACC</span></div>
+          <div class="stat"><strong id="spPaidStages">0</strong><span>SP-Paid Stages</span></div>
+          <div class="stat"><strong id="accPaidStages">0</strong><span>ACC-Paid Stages</span></div>
+          <div class="stat"><strong id="attPaidStages">0</strong><span>ATT-Paid Stages</span></div>
+        </div>
+
+        <div class="notice-list" id="notices"></div>
+
+        <section class="section">
+          <h2>Export</h2>
+          <pre id="exportJson"></pre>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const tiers = {
+      1: { name: 'Baby', maxStat: 50, defaultAtp: 10, defaultAcc: 90, defaultAtt: 80, defaultSp: 3, accAbilityCost: 5, atpStageCost: 3, atpStageGain: 3, atpCap: 25, evolveAt: 50 },
+      2: { name: 'Basic', maxStat: 100, defaultAtp: 20, defaultAcc: 90, defaultAtt: 80, defaultSp: 10, accAbilityCost: 10, atpStageCost: 6, atpStageGain: 6, atpCap: 50, evolveAt: 100 },
+      3: { name: 'Greater', maxStat: 200, defaultAtp: 50, defaultAcc: 90, defaultAtt: 80, defaultSp: 20, accAbilityCost: 15, atpStageCost: 12, atpStageGain: 10, atpCap: 100, evolveAt: 200 },
+      4: { name: 'Elite', maxStat: 350, defaultAtp: 70, defaultAcc: 90, defaultAtt: 80, defaultSp: 30, accAbilityCost: 20, atpStageCost: 18, atpStageGain: 16, atpCap: 150, evolveAt: 350 },
+      5: { name: 'Legendary', maxStat: 550, defaultAtp: 90, defaultAcc: 90, defaultAtt: 80, defaultSp: 40, accAbilityCost: 30, atpStageCost: 24, atpStageGain: 22, atpCap: 200, evolveAt: null }
+    };
+
+    const types = [
+      { name: 'Oceanic', ability: 'Freeze', themes: 'Water & Ice' },
+      { name: 'Volcanic', ability: 'Burn', themes: 'Fire & Rock' },
+      { name: 'Earthen', ability: 'Constrict', themes: 'Grass & Ground' },
+      { name: 'Aerial', ability: 'Paralyze', themes: 'Flying & Electric' },
+      { name: 'Crawly', ability: 'Poison', themes: 'Bug & Poison' },
+      { name: 'Spooky', ability: 'Sleep', themes: 'Ghost & Dark' },
+      { name: 'Mental', ability: 'Confuse', themes: 'Psychic & Fairy' },
+      { name: 'Physical', ability: 'Stun', themes: 'Normal & Fighting' }
+    ];
+
+    const targets = [
+      { name: '1 Enemy', stageCost: 0 },
+      { name: 'Self', stageCost: 1 },
+      { name: 'Everyone', stageCost: 2 },
+      { name: 'All Enemies', stageCost: 3 },
+      { name: 'All Allies', stageCost: 3 }
+    ];
+
+    const form = document.querySelector('#skillForm');
+    const tierSelect = document.querySelector('#tier');
+    const typeSelect = document.querySelector('#type');
+    const targetSelect = document.querySelector('#target');
+
+    function populateOptions() {
+      tierSelect.innerHTML = Object.entries(tiers)
+        .map(([tier, data]) => `<option value="${tier}">Tier ${tier}: ${data.name}</option>`)
+        .join('');
+
+      typeSelect.innerHTML = types
+        .map((type) => `<option value="${type.name}">${type.name} (${type.ability})</option>`)
+        .join('');
+
+      targetSelect.innerHTML = targets
+        .map((target) => `<option value="${target.name}">${target.name} (${target.stageCost} stage${target.stageCost === 1 ? '' : 's'})</option>`)
+        .join('');
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function numberValue(id) {
+      return Number(document.querySelector(id).value);
+    }
+
+    function clampRangeInput(id, max) {
+      const input = document.querySelector(id);
+      input.max = max;
+      if (Number(input.value) > max) {
+        input.value = max;
+      }
+      return Number(input.value);
+    }
+
+    function clampRemainingRangeInput(id, total, used) {
+      return clampRangeInput(id, Math.max(0, total - used));
+    }
+
+    function getSelectedType(name) {
+      return types.find((type) => type.name === name) || types[0];
+    }
+
+    function getSelectedTarget(name) {
+      return targets.find((target) => target.name === name) || targets[0];
+    }
+
+    function makeNotice(message, kind = 'warn') {
+      return `<div class="notice ${kind}">${message}</div>`;
+    }
+
+    function update() {
+      const tier = numberValue('#tier');
+      const tierData = tiers[tier];
+      const type = getSelectedType(document.querySelector('#type').value);
+      const target = getSelectedTarget(document.querySelector('#target').value);
+      const skillLevel = numberValue('#skillLevel');
+      const atpStages = numberValue('#atpStages');
+      const accStages = numberValue('#accStages');
+      const attSpeedStages = numberValue('#attSpeedStages');
+      const attackRatio = numberValue('#attackRatio');
+      const hasAbility = document.querySelector('#hasAbility').checked;
+      const atpAccPayment = clampRangeInput('#atpAccPayment', atpStages);
+      const atpAttPayment = clampRemainingRangeInput('#atpAttPayment', atpStages, atpAccPayment);
+      const accAccPayment = clampRangeInput('#accAccPayment', accStages);
+      const accAttPayment = clampRemainingRangeInput('#accAttPayment', accStages, accAccPayment);
+      const attAccPayment = clampRangeInput('#attAccPayment', attSpeedStages);
+      const targetAccPayment = clampRangeInput('#targetAccPayment', target.stageCost);
+      const abilityPayment = document.querySelector('#abilityPayment').value;
+      const atpSpPayment = atpStages - atpAccPayment - atpAttPayment;
+      const accSpPayment = accStages - accAccPayment - accAttPayment;
+      const attSpPayment = attSpeedStages - attAccPayment;
+      const targetSpPayment = target.stageCost - targetAccPayment;
+      const abilityAccPayment = hasAbility && abilityPayment === 'acc' ? 1 : 0;
+      const abilitySpPayment = hasAbility && abilityPayment === 'sp' ? 1 : 0;
+      const abilityAttPayment = hasAbility && abilityPayment === 'att' ? 1 : 0;
+      const totalAccPenaltyStages = atpAccPayment + accAccPayment + attAccPayment + targetAccPayment + abilityAccPayment;
+      const totalSpCostStages = atpSpPayment + accSpPayment + attSpPayment + targetSpPayment + abilitySpPayment;
+      const totalAttackTimePaymentStages = atpAttPayment + accAttPayment + abilityAttPayment;
+
+      const rawBaseAtp = tierData.defaultAtp + atpStages * tierData.atpStageGain;
+      const cappedBaseAtp = Math.min(rawBaseAtp, tierData.atpCap);
+      const baseAcc = clamp(tierData.defaultAcc + accStages * 10 - totalAccPenaltyStages * 15, 0, 100);
+      const attackTime = tierData.defaultAtt - attSpeedStages * 20 + totalAttackTimePaymentStages * 20;
+
+      const atpSpCost = (atpSpPayment + attSpPayment) * tierData.atpStageCost;
+      const otherSpCost = (accSpPayment + abilitySpPayment + targetSpPayment) * tierData.accAbilityCost;
+      const baseSp = tierData.defaultSp + atpSpCost + otherSpCost;
+
+      const sklAtpBonus = Math.min(20, skillLevel * 0.04);
+      const sklAccBonus = Math.min(20, skillLevel * 0.04);
+      const trainedSpReduction = ((baseSp / 2) / 500) * skillLevel;
+      const finalAtp = Math.min(tierData.atpCap + 20, cappedBaseAtp + sklAtpBonus);
+      const finalAcc = clamp(baseAcc + sklAccBonus, 0, 100);
+      const finalSp = Math.max(1, baseSp - trainedSpReduction);
+      const specialRatio = 100 - attackRatio;
+
+      document.querySelector('#atpStageValue').textContent = atpStages;
+      document.querySelector('#accStageValue').textContent = accStages;
+      document.querySelector('#attSpeedStageValue').textContent = attSpeedStages;
+      document.querySelector('#atpAccPaymentValue').textContent = atpAccPayment;
+      document.querySelector('#atpAttPaymentValue').textContent = atpAttPayment;
+      document.querySelector('#accAccPaymentValue').textContent = accAccPayment;
+      document.querySelector('#accAttPaymentValue').textContent = accAttPayment;
+      document.querySelector('#attAccPaymentValue').textContent = attAccPayment;
+      document.querySelector('#targetAccPaymentValue').textContent = targetAccPayment;
+      document.querySelector('#skillLevelValue').textContent = skillLevel;
+      document.querySelector('#attackRatioValue').textContent = `${attackRatio}% Physical / ${specialRatio}% Special`;
+      document.querySelector('#summaryName').textContent = document.querySelector('#name').value || 'Unnamed Skill';
+      document.querySelector('#summaryChips').innerHTML = [
+        `Tier ${tier} ${tierData.name}`,
+        type.name,
+        `ATT ${attackTime}`,
+        hasAbility ? type.ability : 'No Ability',
+        target.name
+      ].map((chip) => `<span class="chip">${chip}</span>`).join('');
+
+      document.querySelector('#finalAtp').textContent = Number(finalAtp.toFixed(1));
+      document.querySelector('#finalAcc').textContent = `${Number(finalAcc.toFixed(1))}%`;
+      document.querySelector('#finalAtt').textContent = attackTime;
+      document.querySelector('#finalSp').textContent = Number(finalSp.toFixed(1));
+      document.querySelector('#finalAtr').textContent = `${attackRatio}/${specialRatio}`;
+      document.querySelector('#baseAtp').textContent = cappedBaseAtp;
+      document.querySelector('#baseAcc').textContent = `${baseAcc}%`;
+      document.querySelector('#spPaidStages').textContent = totalSpCostStages;
+      document.querySelector('#accPaidStages').textContent = totalAccPenaltyStages;
+      document.querySelector('#attPaidStages').textContent = totalAttackTimePaymentStages;
+
+      const notices = [];
+      if (rawBaseAtp > tierData.atpCap) {
+        notices.push(makeNotice(`Base ATP is capped from ${rawBaseAtp} to ${tierData.atpCap} for Tier ${tier}.`, 'danger'));
+      }
+      if (baseAcc < 50) {
+        notices.push(makeNotice(`Base ACC is ${baseAcc}%. This may be too unreliable unless high SKL is expected.`, 'danger'));
+      } else if (baseAcc < 75) {
+        notices.push(makeNotice(`Base ACC is ${baseAcc}%. This is a noticeable trade-off.`, 'warn'));
+      }
+      if (baseSp > tierData.defaultSp * 4) {
+        notices.push(makeNotice(`Base SP cost is more than 4x the tier default (${tierData.defaultSp}).`, 'warn'));
+      }
+      if (attackTime < 40) {
+        notices.push(makeNotice(`ATT ${attackTime} is extremely fast. Confirm the SP/ACC trade-off feels worth it.`, 'warn'));
+      }
+      if (attackTime > 120) {
+        notices.push(makeNotice(`ATT ${attackTime} is very slow. Confirm the extra upgrades are worth the delay.`, 'warn'));
+      }
+      if (tierData.evolveAt && skillLevel >= tierData.evolveAt) {
+        notices.push(makeNotice(`This skill has reached the Tier ${tier} evolution threshold at SKL ${tierData.evolveAt}.`, 'good'));
+      }
+      if (!notices.length) {
+        notices.push(makeNotice('No obvious balance warnings for this configuration.', 'good'));
+      }
+      document.querySelector('#notices').innerHTML = notices.join('');
+
+      const exported = {
+        id: document.querySelector('#name').value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''),
+        name: document.querySelector('#name').value || 'Unnamed Skill',
+        description: document.querySelector('#description').value,
+        tier,
+        type: type.name,
+        ability: hasAbility ? type.ability : null,
+        target: target.name,
+        attackTime,
+        attackRatioPhysicalPercent: attackRatio,
+        builder: {
+          atpStages,
+          accBoostStages: accStages,
+          attackTimeSpeedStages: attSpeedStages,
+          targetStageCost: target.stageCost,
+          payments: {
+            atpStagesBySp: atpSpPayment,
+            atpStagesByAcc: atpAccPayment,
+            atpStagesByAttackTime: atpAttPayment,
+            accBoostStagesBySp: accSpPayment,
+            accBoostStagesByAcc: accAccPayment,
+            accBoostStagesByAttackTime: accAttPayment,
+            attackTimeSpeedStagesBySp: attSpPayment,
+            attackTimeSpeedStagesByAcc: attAccPayment,
+            targetStagesBySp: targetSpPayment,
+            targetStagesByAcc: targetAccPayment,
+            abilityBySp: abilitySpPayment,
+            abilityByAcc: abilityAccPayment,
+            abilityByAttackTime: abilityAttPayment
+          },
+          totalAccPenaltyStages,
+          totalSpCostStages,
+          totalAttackTimePaymentStages,
+          rawBaseAtp,
+          cappedBaseAtp,
+          baseAttackTime: attackTime,
+          baseAcc,
+          baseSp
+        },
+        skillLevel,
+        trained: {
+          atpBonus: Number(sklAtpBonus.toFixed(2)),
+          accBonus: Number(sklAccBonus.toFixed(2)),
+          spReduction: Number(trainedSpReduction.toFixed(2)),
+          finalAtp: Number(finalAtp.toFixed(2)),
+          finalAcc: Number(finalAcc.toFixed(2)),
+          finalSpCost: Number(finalSp.toFixed(2))
+        }
+      };
+
+      document.querySelector('#exportJson').textContent = JSON.stringify(exported, null, 2);
+    }
+
+    populateOptions();
+    tierSelect.value = '1';
+    typeSelect.value = 'Oceanic';
+    targetSelect.value = '1 Enemy';
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+    update();
+  </script>
+</body>
+</html>

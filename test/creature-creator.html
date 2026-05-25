@@ -1,0 +1,1158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Creature Quest Creature Creator Test</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d1117;
+      --panel: #151b24;
+      --panel-strong: #1f2a38;
+      --ink: #f5f7fb;
+      --muted: #9eabbc;
+      --line: #303a49;
+      --accent: #9cffcb;
+      --accent-2: #93c5fd;
+      --warn: #ffd166;
+      --danger: #ff8a8a;
+      --good: #8ee6a8;
+      --shadow: 0 22px 60px rgb(0 0 0 / 35%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 0%, rgb(156 255 203 / 16%), transparent 34rem),
+        radial-gradient(circle at 85% 18%, rgb(147 197 253 / 14%), transparent 28rem),
+        linear-gradient(180deg, #0d1117, #0a0d13 62%);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(1280px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0;
+    }
+
+    header {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 820px;
+      font-size: clamp(2rem, 6vw, 4.8rem);
+      line-height: 0.9;
+      letter-spacing: -0.08em;
+    }
+
+    header p {
+      max-width: 840px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgb(255 255 255 / 4%), rgb(255 255 255 / 1%)), var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .builder,
+    .summary {
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .summary {
+      position: sticky;
+      top: 18px;
+    }
+
+    .section {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      background: rgb(255 255 255 / 2%);
+      border: 1px solid rgb(255 255 255 / 7%);
+      border-radius: 18px;
+    }
+
+    .section h2 {
+      color: var(--accent);
+      font-size: 0.86rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    label,
+    .field-label {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      width: 100%;
+      color: var(--ink);
+      background: #0b0f16;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font: inherit;
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      color: #08110d;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: 0;
+      font-weight: 900;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgb(156 255 203 / 14%);
+    }
+
+    input[type="range"] {
+      padding: 0;
+      accent-color: var(--accent);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr) 82px;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      background: #0b0f16;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .stat-row strong {
+      font-size: 0.88rem;
+    }
+
+    .stat-row input[type="number"] {
+      padding: 8px;
+      text-align: right;
+    }
+
+    .skill-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .skill-card {
+      display: grid;
+      gap: 12px;
+      padding: 13px;
+      background: #0b0f16;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .skill-card h3 {
+      color: var(--accent-2);
+      font-size: 0.88rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .check-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 12px;
+      background: #0b0f16;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .check-row input {
+      width: auto;
+    }
+
+    .check-row span {
+      color: var(--ink);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: normal;
+      text-transform: none;
+    }
+
+    .creature-title {
+      display: grid;
+      gap: 8px;
+      padding: 18px;
+      background: linear-gradient(135deg, rgb(156 255 203 / 14%), rgb(147 197 253 / 10%));
+      border: 1px solid rgb(255 255 255 / 10%);
+      border-radius: 18px;
+    }
+
+    .creature-title h2 {
+      font-size: 1.55rem;
+      letter-spacing: -0.04em;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      color: var(--muted);
+      background: rgb(255 255 255 / 8%);
+      border: 1px solid rgb(255 255 255 / 9%);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 13px;
+      background: #0b0f16;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.45rem;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .notice-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .notice {
+      padding: 10px 12px;
+      color: var(--muted);
+      background: rgb(255 255 255 / 4%);
+      border: 1px solid rgb(255 255 255 / 9%);
+      border-radius: 12px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .notice.good {
+      color: var(--good);
+      background: rgb(142 230 168 / 9%);
+      border-color: rgb(142 230 168 / 22%);
+    }
+
+    .notice.warn {
+      color: var(--warn);
+      background: rgb(255 209 102 / 9%);
+      border-color: rgb(255 209 102 / 22%);
+    }
+
+    .notice.danger {
+      color: var(--danger);
+      background: rgb(255 138 138 / 9%);
+      border-color: rgb(255 138 138 / 22%);
+    }
+
+    pre {
+      max-height: 360px;
+      overflow: auto;
+      margin: 0;
+      padding: 14px;
+      color: #d7e7f7;
+      background: #0b0f16;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .formula {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    .formula code {
+      color: var(--ink);
+      background: rgb(255 255 255 / 7%);
+      border-radius: 6px;
+      padding: 2px 5px;
+    }
+
+    @media (max-width: 1040px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        position: static;
+      }
+    }
+
+    @media (max-width: 700px) {
+      main {
+        width: min(100% - 20px, 1280px);
+        padding: 24px 0;
+      }
+
+      .grid,
+      .grid.three,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Creature Creator Combat Test</h1>
+      <p>
+        A throwaway HTML test page for building combat-ready creatures from
+        <a href="../docs/stats.md">stats</a>, <a href="../docs/tiers.md">tiers</a>,
+        <a href="../docs/types.md">types</a>, <a href="../docs/skills.md">skills</a>,
+        <a href="../docs/innate-talent.md">innate talents</a>, <a href="../docs/equipment.md">equipment</a>,
+        and <a href="../docs/combat.md">combat</a>.
+      </p>
+    </header>
+
+    <div class="layout">
+      <form class="card builder" id="creatureForm">
+        <section class="section">
+          <h2>Identity</h2>
+          <div class="grid">
+            <label>
+              Creature Name
+              <input id="name" name="name" value="Storm Kit" autocomplete="off">
+            </label>
+            <label>
+              Species
+              <input id="species" name="species" value="Skycat" autocomplete="off">
+            </label>
+            <label>
+              Tier
+              <select id="tier" name="tier"></select>
+            </label>
+            <label>
+              Type
+              <select id="type" name="type"></select>
+            </label>
+          </div>
+          <label>
+            Notes
+            <textarea id="notes" name="notes">Testing creature for timeline, SP, hit chance, and damage formulas.</textarea>
+          </label>
+        </section>
+
+        <section class="section">
+          <h2>Innate Talent</h2>
+          <div class="grid">
+            <label>
+              Positive Growth
+              <select id="positiveTalent" name="positiveTalent"></select>
+            </label>
+            <label>
+              Negative Growth
+              <select id="negativeTalent" name="negativeTalent"></select>
+            </label>
+          </div>
+          <p class="formula">
+            Innate talent affects growth, not the current stat values entered below. Matching positive and negative stats become Balanced.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2>Stats</h2>
+          <div id="statControls"></div>
+          <div class="grid">
+            <label>
+              Current HP % <span id="currentHpValue">100%</span>
+              <input id="currentHpPercent" name="currentHpPercent" type="range" min="1" max="100" value="100">
+            </label>
+            <label>
+              Current SP % <span id="currentSpValue">50%</span>
+              <input id="currentSpPercent" name="currentSpPercent" type="range" min="0" max="100" value="50">
+            </label>
+            <label>
+              Exploration SP Cap %
+              <input id="explorationSpCap" name="explorationSpCap" type="number" min="0" max="100" value="50">
+            </label>
+            <label>
+              Starting Timeline
+              <input id="nextActionAt" name="nextActionAt" type="number" min="0" value="0">
+            </label>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Equipment And Consumable</h2>
+          <div class="grid">
+            <label>
+              Equipment
+              <select id="equipment" name="equipment"></select>
+            </label>
+            <label>
+              Consumable
+              <select id="consumable" name="consumable"></select>
+            </label>
+          </div>
+          <div class="grid three">
+            <label>
+              Custom Skill ATP
+              <input id="customEquipmentAtp" name="customEquipmentAtp" type="number" value="0">
+            </label>
+            <label>
+              Custom Skill ACC
+              <input id="customEquipmentAcc" name="customEquipmentAcc" type="number" value="0">
+            </label>
+            <label>
+              Custom Max SP
+              <input id="customEquipmentSp" name="customEquipmentSp" type="number" value="0">
+            </label>
+          </div>
+          <p class="formula">
+            A creature can carry one equipment item and one consumable. Equipment modifiers are applied to effective combat stats and skill values.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2>Skill Loadout</h2>
+          <button type="button" id="resetSkills">Reset Skills From Tier</button>
+          <div class="skill-list" id="skillList"></div>
+          <p class="formula">
+            These skill slots are intentionally simple. For detailed skill balancing, create the skill in <a href="./skill-creator.html">skill-creator.html</a> and copy the final values here.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2>Combat Probe</h2>
+          <div class="grid three">
+            <label>
+              Test Skill
+              <select id="probeSkill" name="probeSkill"></select>
+            </label>
+            <label>
+              Defender Type
+              <select id="defenderType" name="defenderType"></select>
+            </label>
+            <label>
+              Defender Tier
+              <select id="defenderTier" name="defenderTier"></select>
+            </label>
+            <label>
+              Defender PDEF
+              <input id="defenderPdef" name="defenderPdef" type="number" min="1" value="60">
+            </label>
+            <label>
+              Defender SDEF
+              <input id="defenderSdef" name="defenderSdef" type="number" min="1" value="60">
+            </label>
+            <label>
+              Defender EVA
+              <input id="defenderEva" name="defenderEva" type="number" min="0" value="60">
+            </label>
+          </div>
+          <p class="formula">
+            Damage probe uses average damage without the final 0.90-1.10 random variance. Hit chance uses the combat clamp of 10% to 95%.
+          </p>
+        </section>
+      </form>
+
+      <aside class="card summary" aria-live="polite">
+        <div class="creature-title">
+          <h2 id="summaryName">Storm Kit</h2>
+          <div class="chips" id="summaryChips"></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><strong id="hpSummary">0/0</strong><span>HP</span></div>
+          <div class="stat"><strong id="spSummary">0/0</strong><span>SP</span></div>
+          <div class="stat"><strong id="statTotal">0</strong><span>Stat Total</span></div>
+          <div class="stat"><strong id="statPercent">0%</strong><span>Tier Cap Used</span></div>
+          <div class="stat"><strong id="equipmentSummary">None</strong><span>Equipment</span></div>
+          <div class="stat"><strong id="consumableSummary">None</strong><span>Consumable</span></div>
+          <div class="stat"><strong id="basicAttackDelay">0</strong><span>Basic Attack Delay</span></div>
+          <div class="stat"><strong id="basicDefenseDelay">0</strong><span>Basic Defense Delay</span></div>
+          <div class="stat"><strong id="probeHit">0%</strong><span>Probe Hit Chance</span></div>
+          <div class="stat"><strong id="probeDamage">0</strong><span>Probe Avg Damage</span></div>
+        </div>
+
+        <div class="notice-list" id="notices"></div>
+
+        <section class="section">
+          <h2>Timeline Preview</h2>
+          <pre id="timelinePreview"></pre>
+        </section>
+
+        <section class="section">
+          <h2>Export</h2>
+          <pre id="exportJson"></pre>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const tiers = {
+      1: { name: 'Baby', maxStat: 50, defaultAtp: 10, defaultAcc: 90, defaultAtt: 80, defaultSpCost: 3, atpCap: 25 },
+      2: { name: 'Basic', maxStat: 100, defaultAtp: 20, defaultAcc: 90, defaultAtt: 80, defaultSpCost: 10, atpCap: 50 },
+      3: { name: 'Greater', maxStat: 200, defaultAtp: 50, defaultAcc: 90, defaultAtt: 80, defaultSpCost: 20, atpCap: 100 },
+      4: { name: 'Elite', maxStat: 350, defaultAtp: 70, defaultAcc: 90, defaultAtt: 80, defaultSpCost: 30, atpCap: 150 },
+      5: { name: 'Legendary', maxStat: 550, defaultAtp: 90, defaultAcc: 90, defaultAtt: 80, defaultSpCost: 40, atpCap: 200 }
+    };
+
+    const stats = [
+      { id: 'HP', name: 'Hit Points' },
+      { id: 'SP', name: 'Stamina Points' },
+      { id: 'PATK', name: 'Physical Attack' },
+      { id: 'PDEF', name: 'Physical Defense' },
+      { id: 'SATK', name: 'Special Attack' },
+      { id: 'SDEF', name: 'Special Defense' },
+      { id: 'SPD', name: 'Speed' },
+      { id: 'EVA', name: 'Evasion' }
+    ];
+
+    const talents = {
+      HP: { positive: 'Vitalized', negative: 'Frail' },
+      SP: { positive: 'Enduring', negative: 'Weary' },
+      PATK: { positive: 'Mighty', negative: 'Feeble' },
+      PDEF: { positive: 'Ironclad', negative: 'Brittle' },
+      SATK: { positive: 'Arcane', negative: 'Dull' },
+      SDEF: { positive: 'Warded', negative: 'Exposed' },
+      SPD: { positive: 'Swift', negative: 'Sluggish' },
+      EVA: { positive: 'Elusive', negative: 'Clumsy' },
+      NA: { positive: 'Balanced', negative: 'Balanced' }
+    };
+
+    const types = [
+      { name: 'Oceanic', ability: 'Freeze' },
+      { name: 'Volcanic', ability: 'Burn' },
+      { name: 'Earthen', ability: 'Constrict' },
+      { name: 'Aerial', ability: 'Paralyze' },
+      { name: 'Crawly', ability: 'Poison' },
+      { name: 'Spooky', ability: 'Sleep' },
+      { name: 'Mental', ability: 'Confuse' },
+      { name: 'Physical', ability: 'Stun' }
+    ];
+
+    const typeChart = {
+      Oceanic: { Oceanic: 1, Volcanic: 2, Earthen: 1, Aerial: 0.5, Crawly: 1, Spooky: 1, Mental: 0.5, Physical: 2 },
+      Volcanic: { Oceanic: 0.5, Volcanic: 1, Earthen: 2, Aerial: 1, Crawly: 1, Spooky: 0.5, Mental: 2, Physical: 1 },
+      Earthen: { Oceanic: 1, Volcanic: 0.5, Earthen: 1, Aerial: 2, Crawly: 0.5, Spooky: 2, Mental: 1, Physical: 1 },
+      Aerial: { Oceanic: 2, Volcanic: 1, Earthen: 0.5, Aerial: 1, Crawly: 2, Spooky: 1, Mental: 1, Physical: 0.5 },
+      Crawly: { Oceanic: 1, Volcanic: 1, Earthen: 2, Aerial: 0.5, Crawly: 1, Spooky: 1, Mental: 2, Physical: 0.5 },
+      Spooky: { Oceanic: 1, Volcanic: 2, Earthen: 0.5, Aerial: 1, Crawly: 1, Spooky: 1, Mental: 0.5, Physical: 2 },
+      Mental: { Oceanic: 2, Volcanic: 0.5, Earthen: 1, Aerial: 1, Crawly: 0.5, Spooky: 2, Mental: 1, Physical: 1 },
+      Physical: { Oceanic: 0.5, Volcanic: 1, Earthen: 1, Aerial: 2, Crawly: 2, Spooky: 0.5, Mental: 1, Physical: 1 }
+    };
+
+    const equipmentTemplates = {
+      none: { name: 'None', stat: {}, skillAtp: 0, skillAcc: 0, spCostReduction: 0, skillAtt: 0, turnStartSpRecoveryBonusPercent: 0, basicActionSpRecoveryBonusPercent: 0, explorationSpCapBonusPercent: 0 },
+      focusCharm: { name: 'Focus Charm', stat: {}, skillAtp: 0, skillAcc: 4, spCostReduction: 0, skillAtt: 0, turnStartSpRecoveryBonusPercent: 0, basicActionSpRecoveryBonusPercent: 0, explorationSpCapBonusPercent: 0 },
+      powerBand: { name: 'Power Band', stat: {}, skillAtp: 7, skillAcc: 0, spCostReduction: 0, skillAtt: 0, turnStartSpRecoveryBonusPercent: 0, basicActionSpRecoveryBonusPercent: 0, explorationSpCapBonusPercent: 0 },
+      staminaBell: { name: 'Stamina Bell', stat: { SP: 10 }, skillAtp: 0, skillAcc: 0, spCostReduction: 0, skillAtt: 0, turnStartSpRecoveryBonusPercent: 0, basicActionSpRecoveryBonusPercent: 0, explorationSpCapBonusPercent: 0 },
+      quickAnklet: { name: 'Quick Anklet', stat: { SPD: 12 }, skillAtp: 0, skillAcc: 0, spCostReduction: 0, skillAtt: 0, turnStartSpRecoveryBonusPercent: 0, basicActionSpRecoveryBonusPercent: 0, explorationSpCapBonusPercent: 0 },
+      deepReservoir: { name: 'Deep Reservoir', stat: {}, skillAtp: 0, skillAcc: 0, spCostReduction: 0, skillAtt: 0, turnStartSpRecoveryBonusPercent: 0, basicActionSpRecoveryBonusPercent: 0, explorationSpCapBonusPercent: 10 },
+      guardShell: { name: 'Guard Shell', stat: { PDEF: 22, SDEF: 22 }, skillAtp: 0, skillAcc: 0, spCostReduction: 0, skillAtt: 0, turnStartSpRecoveryBonusPercent: 0, basicActionSpRecoveryBonusPercent: 0, explorationSpCapBonusPercent: 0 },
+      apexLens: { name: 'Apex Lens', stat: {}, skillAtp: 10, skillAcc: 15, spCostReduction: 0, skillAtt: 0, turnStartSpRecoveryBonusPercent: 0, basicActionSpRecoveryBonusPercent: 0, explorationSpCapBonusPercent: 0 }
+    };
+
+    const consumableTemplates = {
+      none: { name: 'None', att: 60, effect: 'No consumable equipped' },
+      smallTonic: { name: 'Small Tonic', att: 60, effect: 'Restore 25% HP', restoreHpPercent: 25 },
+      staminaDrop: { name: 'Stamina Drop', att: 60, effect: 'Restore 25% SP', restoreSpPercent: 25 },
+      antidote: { name: 'Antidote', att: 60, effect: 'Cure Poison', cures: ['Poison'] },
+      warmingHerb: { name: 'Warming Herb', att: 60, effect: 'Cure Freeze', cures: ['Freeze'] },
+      bitterRoot: { name: 'Bitter Root', att: 60, effect: 'Cure Sleep or Confuse', cures: ['Sleep', 'Confuse'] },
+      guardPowder: { name: 'Guard Powder', att: 60, effect: 'Apply Guarded until the next incoming damaging skill', applies: ['Guarded'] }
+    };
+
+    const form = document.querySelector('#creatureForm');
+    const tierSelect = document.querySelector('#tier');
+    const typeSelect = document.querySelector('#type');
+    const skillList = document.querySelector('#skillList');
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function numberValue(id) {
+      return Number(document.querySelector(id).value);
+    }
+
+    function getTier() {
+      return tiers[numberValue('#tier')];
+    }
+
+    function getType(name) {
+      return types.find((type) => type.name === name) || types[0];
+    }
+
+    function populateOptions() {
+      tierSelect.innerHTML = Object.entries(tiers)
+        .map(([tier, data]) => `<option value="${tier}">Tier ${tier}: ${data.name}</option>`)
+        .join('');
+
+      typeSelect.innerHTML = types
+        .map((type) => `<option value="${type.name}">${type.name} (${type.ability})</option>`)
+        .join('');
+
+      document.querySelector('#defenderType').innerHTML = typeSelect.innerHTML;
+      document.querySelector('#defenderTier').innerHTML = tierSelect.innerHTML;
+
+      document.querySelector('#positiveTalent').innerHTML = stats
+        .map((stat) => `<option value="${stat.id}">${talents[stat.id].positive} (${stat.id} +10%)</option>`)
+        .concat('<option value="NA">Balanced</option>')
+        .join('');
+
+      document.querySelector('#negativeTalent').innerHTML = stats
+        .map((stat) => `<option value="${stat.id}">${talents[stat.id].negative} (${stat.id} -10%)</option>`)
+        .concat('<option value="NA">Balanced</option>')
+        .join('');
+
+      document.querySelector('#equipment').innerHTML = Object.entries(equipmentTemplates)
+        .map(([id, equipment]) => `<option value="${id}">${equipment.name}</option>`)
+        .join('');
+
+      document.querySelector('#consumable').innerHTML = Object.entries(consumableTemplates)
+        .map(([id, consumable]) => `<option value="${id}">${consumable.name}</option>`)
+        .join('');
+    }
+
+    function buildStatControls() {
+      document.querySelector('#statControls').innerHTML = stats.map((stat) => `
+        <div class="stat-row">
+          <strong>${stat.id}</strong>
+          <input id="stat${stat.id}Range" type="range" min="1" max="100" value="60" data-stat="${stat.id}">
+          <input id="stat${stat.id}" name="stat${stat.id}" type="number" min="1" max="100" value="60" aria-label="${stat.name}">
+        </div>
+      `).join('');
+    }
+
+    function buildSkillRows() {
+      skillList.innerHTML = Array.from({ length: 4 }, (_, index) => {
+        const slot = index + 1;
+        return `
+          <div class="skill-card" data-skill-slot="${slot}">
+            <h3>Skill ${slot}</h3>
+            <div class="grid three">
+              <label>Name<input id="skill${slot}Name" name="skill${slot}Name" autocomplete="off"></label>
+              <label>Type<select id="skill${slot}Type" name="skill${slot}Type"></select></label>
+              <label>Target<select id="skill${slot}Target" name="skill${slot}Target"><option>1 Enemy</option><option>Self</option><option>Everyone</option><option>All Enemies</option><option>All Allies</option></select></label>
+              <label>ATP<input id="skill${slot}Atp" name="skill${slot}Atp" type="number" min="0" value="20"></label>
+              <label>ACC<input id="skill${slot}Acc" name="skill${slot}Acc" type="number" min="0" max="100" value="90"></label>
+              <label>ATT<input id="skill${slot}Att" name="skill${slot}Att" type="number" min="20" max="200" value="80"></label>
+              <label>SPC<input id="skill${slot}Spc" name="skill${slot}Spc" type="number" min="0" value="10"></label>
+              <label>ATR % Physical<input id="skill${slot}Atr" name="skill${slot}Atr" type="number" min="0" max="100" value="50"></label>
+              <label>SKL<input id="skill${slot}Skl" name="skill${slot}Skl" type="number" min="0" max="500" value="0"></label>
+            </div>
+            <label class="field-label">
+              Ability
+              <span class="check-row"><input id="skill${slot}Ability" name="skill${slot}Ability" type="checkbox"><span>Use type signature ability</span></span>
+            </label>
+          </div>
+        `;
+      }).join('');
+
+      for (let slot = 1; slot <= 4; slot += 1) {
+        document.querySelector(`#skill${slot}Type`).innerHTML = typeSelect.innerHTML;
+      }
+
+      document.querySelector('#probeSkill').innerHTML = Array.from({ length: 4 }, (_, index) => `<option value="${index + 1}">Skill ${index + 1}</option>`).join('');
+    }
+
+    function resetStatsForTier() {
+      const tier = getTier();
+      stats.forEach((stat) => {
+        const value = Math.round(tier.maxStat * 0.6);
+        const range = document.querySelector(`#stat${stat.id}Range`);
+        const input = document.querySelector(`#stat${stat.id}`);
+        range.max = tier.maxStat;
+        input.max = tier.maxStat;
+        range.value = value;
+        input.value = value;
+      });
+    }
+
+    function resetSkillsForTier() {
+      const tier = getTier();
+      const creatureType = document.querySelector('#type').value;
+      const templates = [
+        { name: 'Quick Jab', atp: Math.round(tier.defaultAtp * 0.7), acc: 95, att: 40, spc: Math.max(1, Math.round(tier.defaultSpCost * 0.7)), atr: 100, ability: false },
+        { name: `${creatureType} Strike`, atp: tier.defaultAtp, acc: tier.defaultAcc, att: tier.defaultAtt, spc: tier.defaultSpCost, atr: 50, ability: true },
+        { name: 'Heavy Break', atp: Math.min(tier.atpCap, Math.round(tier.defaultAtp * 1.45)), acc: 75, att: 120, spc: Math.round(tier.defaultSpCost * 1.4), atr: 70, ability: false },
+        { name: 'Guarding Pulse', atp: 0, acc: 100, att: 80, spc: Math.round(tier.defaultSpCost * 0.8), atr: 0, ability: false, target: 'Self' }
+      ];
+
+      templates.forEach((skill, index) => {
+        const slot = index + 1;
+        document.querySelector(`#skill${slot}Name`).value = skill.name;
+        document.querySelector(`#skill${slot}Type`).value = skill.target === 'Self' ? 'Physical' : creatureType;
+        document.querySelector(`#skill${slot}Target`).value = skill.target || '1 Enemy';
+        document.querySelector(`#skill${slot}Atp`).value = skill.atp;
+        document.querySelector(`#skill${slot}Acc`).value = skill.acc;
+        document.querySelector(`#skill${slot}Att`).value = skill.att;
+        document.querySelector(`#skill${slot}Spc`).value = skill.spc;
+        document.querySelector(`#skill${slot}Atr`).value = skill.atr;
+        document.querySelector(`#skill${slot}Skl`).value = 0;
+        document.querySelector(`#skill${slot}Ability`).checked = skill.ability;
+      });
+    }
+
+    function syncStatInputs(event) {
+      const target = event.target;
+      if (!target.id || !target.id.startsWith('stat')) {
+        return;
+      }
+
+      const stat = stats.find((item) => target.id === `stat${item.id}` || target.id === `stat${item.id}Range`);
+      if (!stat) {
+        return;
+      }
+
+      const tier = getTier();
+      const value = clamp(Number(target.value), 1, tier.maxStat);
+      document.querySelector(`#stat${stat.id}`).value = value;
+      document.querySelector(`#stat${stat.id}Range`).value = value;
+    }
+
+    function getStatValues() {
+      return Object.fromEntries(stats.map((stat) => [stat.id, numberValue(`#stat${stat.id}`)]));
+    }
+
+    function getEquipment() {
+      const template = equipmentTemplates[document.querySelector('#equipment').value] || equipmentTemplates.none;
+      return {
+        ...template,
+        stat: {
+          ...template.stat,
+          SP: (template.stat.SP || 0) + numberValue('#customEquipmentSp')
+        },
+        skillAtp: template.skillAtp + numberValue('#customEquipmentAtp'),
+        skillAcc: template.skillAcc + numberValue('#customEquipmentAcc')
+      };
+    }
+
+    function getConsumable() {
+      return consumableTemplates[document.querySelector('#consumable').value] || consumableTemplates.none;
+    }
+
+    function applyEquipmentStats(baseStats, equipment) {
+      return Object.fromEntries(stats.map((stat) => {
+        const bonus = equipment.stat[stat.id] || 0;
+        return [stat.id, Math.max(1, baseStats[stat.id] + bonus)];
+      }));
+    }
+
+    function getTalentSummary() {
+      const positive = document.querySelector('#positiveTalent').value;
+      const negative = document.querySelector('#negativeTalent').value;
+      const growthModifiers = {};
+
+      if (positive === negative) {
+        return {
+          disposition: 'Balanced',
+          positiveStat: positive,
+          negativeStat: negative,
+          positiveName: 'Balanced',
+          negativeName: 'Balanced',
+          growthModifiers: {}
+        };
+      }
+
+      if (positive !== 'NA') {
+        growthModifiers[positive] = 0.10;
+      }
+
+      if (negative !== 'NA') {
+        growthModifiers[negative] = -0.10;
+      }
+
+      return {
+        disposition: `${talents[positive].positive} / ${talents[negative].negative}`,
+        positiveStat: positive,
+        negativeStat: negative,
+        positiveName: talents[positive].positive,
+        negativeName: talents[negative].negative,
+        growthModifiers
+      };
+    }
+
+    function getSkill(slot, equipment) {
+      const type = getType(document.querySelector(`#skill${slot}Type`).value);
+      const skillLevel = numberValue(`#skill${slot}Skl`);
+      const baseAcc = clamp(numberValue(`#skill${slot}Acc`), 0, 100);
+      const baseSp = numberValue(`#skill${slot}Spc`);
+      const trainedSpReduction = ((baseSp / 2) / 500) * skillLevel;
+      return {
+        slot,
+        name: document.querySelector(`#skill${slot}Name`).value || `Skill ${slot}`,
+        type: type.name,
+        ability: document.querySelector(`#skill${slot}Ability`).checked ? type.ability : null,
+        target: document.querySelector(`#skill${slot}Target`).value,
+        atp: Math.max(0, numberValue(`#skill${slot}Atp`) + Math.min(20, skillLevel * 0.04) + equipment.skillAtp),
+        acc: clamp(baseAcc + Math.min(20, skillLevel * 0.04) + equipment.skillAcc, 0, 100),
+        att: Math.max(20, numberValue(`#skill${slot}Att`) + equipment.skillAtt),
+        spCost: Math.max(0, Number((baseSp - trainedSpReduction - equipment.spCostReduction).toFixed(2))),
+        attackRatioPhysicalPercent: clamp(numberValue(`#skill${slot}Atr`), 0, 100),
+        skillLevel,
+        equipmentApplied: {
+          atp: equipment.skillAtp,
+          acc: equipment.skillAcc,
+          spCostReduction: equipment.spCostReduction,
+          att: equipment.skillAtt
+        }
+      };
+    }
+
+    function actionDelay(att, spd) {
+      return clamp(Math.round(att * (100 / (100 + spd / 2))), 20, 160);
+    }
+
+    function evasionPenalty(eva) {
+      return Math.min(40, 50 * (eva / (eva + 150)));
+    }
+
+    function hitChance(acc, eva) {
+      return clamp(acc - evasionPenalty(eva), 10, 95);
+    }
+
+    function typeEffectiveness(defenderType, attackerType) {
+      return typeChart[defenderType][attackerType] || 1;
+    }
+
+    function averageDamage(skill, attackerStats, defenderPdef, defenderSdef, defenderType) {
+      if (skill.atp <= 0) {
+        return 0;
+      }
+
+      const physicalAtp = skill.atp * (skill.attackRatioPhysicalPercent / 100);
+      const specialAtp = skill.atp * (1 - skill.attackRatioPhysicalPercent / 100);
+      const physicalMultiplier = clamp(Math.sqrt(attackerStats.PATK / Math.max(1, defenderPdef)), 0.35, 1.85);
+      const specialMultiplier = clamp(Math.sqrt(attackerStats.SATK / Math.max(1, defenderSdef)), 0.35, 1.85);
+      const baseDamage = physicalAtp * physicalMultiplier + specialAtp * specialMultiplier;
+      return Math.max(1, Math.round(baseDamage * typeEffectiveness(defenderType, skill.type)));
+    }
+
+    function makeBasicActions(tier, spd, equipment) {
+      return {
+        basicAttack: {
+          name: 'Basic Attack',
+          atp: Math.max(0, Number((tier.defaultAtp * 0.5).toFixed(1)) + equipment.skillAtp),
+          acc: clamp(95 + equipment.skillAcc, 0, 100),
+          att: Math.max(20, 80 + equipment.skillAtt),
+          spCost: 0,
+          attackRatioPhysicalPercent: 100,
+          type: 'Physical',
+          target: '1 Enemy',
+          spRecoveryPercent: 10 + equipment.basicActionSpRecoveryBonusPercent,
+          actionDelay: actionDelay(Math.max(20, 80 + equipment.skillAtt), spd)
+        },
+        basicDefense: {
+          name: 'Basic Defense',
+          att: Math.max(20, 60 + equipment.skillAtt),
+          spCost: 0,
+          target: 'Self',
+          effect: 'Guarded: PDEF and SDEF +50% against the next incoming damaging skill',
+          spRecoveryPercent: 10 + equipment.basicActionSpRecoveryBonusPercent,
+          actionDelay: actionDelay(Math.max(20, 60 + equipment.skillAtt), spd)
+        }
+      };
+    }
+
+    function timelinePreview(creatureName, nextActionAt, spd, skills, basicActions, consumable) {
+      const actions = [
+        ...skills.map((skill) => ({ name: skill.name, att: skill.att })),
+        { name: 'Basic Attack', att: basicActions.basicAttack.att },
+        { name: 'Basic Defense', att: basicActions.basicDefense.att }
+      ];
+
+      if (consumable.name !== 'None') {
+        actions.push({ name: `Use ${consumable.name}`, att: consumable.att });
+      }
+
+      return actions
+        .map((action) => ({
+          action: action.name,
+          nextActionAt: nextActionAt + actionDelay(action.att, spd),
+          delay: actionDelay(action.att, spd)
+        }))
+        .sort((left, right) => left.nextActionAt - right.nextActionAt)
+        .slice(0, 6)
+        .map((item, index) => `${index + 1}. ${creatureName} after ${item.action}: t=${item.nextActionAt} (delay ${item.delay})`)
+        .join('\n');
+    }
+
+    function makeNotice(message, kind = 'warn') {
+      return `<div class="notice ${kind}">${message}</div>`;
+    }
+
+    function updateTierLimits() {
+      const tier = getTier();
+      stats.forEach((stat) => {
+        const range = document.querySelector(`#stat${stat.id}Range`);
+        const input = document.querySelector(`#stat${stat.id}`);
+        range.max = tier.maxStat;
+        input.max = tier.maxStat;
+        if (Number(input.value) > tier.maxStat) {
+          input.value = tier.maxStat;
+          range.value = tier.maxStat;
+        }
+      });
+    }
+
+    function updateDefenderDefaults() {
+      const defenderTier = tiers[numberValue('#defenderTier')];
+      const defaultValue = Math.round(defenderTier.maxStat * 0.6);
+      ['#defenderPdef', '#defenderSdef', '#defenderEva'].forEach((id) => {
+        const input = document.querySelector(id);
+        input.max = defenderTier.maxStat;
+        input.value = defaultValue;
+      });
+    }
+
+    function update() {
+      updateTierLimits();
+      const tierNumber = numberValue('#tier');
+      const tier = tiers[tierNumber];
+      const creatureType = getType(document.querySelector('#type').value);
+      const creatureName = document.querySelector('#name').value || 'Unnamed Creature';
+      const baseStats = getStatValues();
+      const equipment = getEquipment();
+      const consumable = getConsumable();
+      const statValues = applyEquipmentStats(baseStats, equipment);
+      const talent = getTalentSummary();
+      const currentHp = Math.round(statValues.HP * (numberValue('#currentHpPercent') / 100));
+      const currentSp = Math.round(statValues.SP * (numberValue('#currentSpPercent') / 100));
+      const explorationSpCapPercent = clamp(numberValue('#explorationSpCap') + equipment.explorationSpCapBonusPercent, 0, 100);
+      const nextActionAt = numberValue('#nextActionAt');
+      const skills = [1, 2, 3, 4].map((slot) => getSkill(slot, equipment));
+      const selectedSkill = skills[numberValue('#probeSkill') - 1] || skills[0];
+      const defenderType = document.querySelector('#defenderType').value;
+      const defenderPdef = numberValue('#defenderPdef');
+      const defenderSdef = numberValue('#defenderSdef');
+      const defenderEva = numberValue('#defenderEva');
+      const basics = makeBasicActions(tier, statValues.SPD, equipment);
+      const totalStats = Object.values(baseStats).reduce((total, value) => total + value, 0);
+      const maxPossibleStats = tier.maxStat * stats.length;
+      const capPercent = (totalStats / maxPossibleStats) * 100;
+      const probeHit = hitChance(selectedSkill.acc, defenderEva);
+      const probeDamage = averageDamage(selectedSkill, statValues, defenderPdef, defenderSdef, defenderType);
+      const turnStartSpRecoveryPercent = 5 + equipment.turnStartSpRecoveryBonusPercent;
+      const basicActionSpRecoveryPercent = 10 + equipment.basicActionSpRecoveryBonusPercent;
+
+      document.querySelector('#currentHpValue').textContent = `${numberValue('#currentHpPercent')}%`;
+      document.querySelector('#currentSpValue').textContent = `${numberValue('#currentSpPercent')}%`;
+      document.querySelector('#summaryName').textContent = creatureName;
+      document.querySelector('#summaryChips').innerHTML = [
+        `Tier ${tierNumber} ${tier.name}`,
+        creatureType.name,
+        creatureType.ability,
+        talent.disposition
+      ].map((chip) => `<span class="chip">${chip}</span>`).join('');
+      document.querySelector('#hpSummary').textContent = `${currentHp}/${statValues.HP}`;
+      document.querySelector('#spSummary').textContent = `${currentSp}/${statValues.SP}`;
+      document.querySelector('#statTotal').textContent = totalStats;
+      document.querySelector('#statPercent').textContent = `${capPercent.toFixed(1)}%`;
+      document.querySelector('#equipmentSummary').textContent = equipment.name;
+      document.querySelector('#consumableSummary').textContent = consumable.name;
+      document.querySelector('#basicAttackDelay').textContent = basics.basicAttack.actionDelay;
+      document.querySelector('#basicDefenseDelay').textContent = basics.basicDefense.actionDelay;
+      document.querySelector('#probeHit').textContent = `${probeHit.toFixed(1)}%`;
+      document.querySelector('#probeDamage').textContent = probeDamage;
+      document.querySelector('#timelinePreview').textContent = timelinePreview(creatureName, nextActionAt, statValues.SPD, skills, basics, consumable);
+
+      const notices = [];
+      if (currentSp > Math.round(statValues.SP * (explorationSpCapPercent / 100))) {
+        notices.push(makeNotice(`Current SP is above the ${explorationSpCapPercent}% exploration recovery cap. This is valid after combat recovery, items, or manual setup.`, 'warn'));
+      }
+      if (equipment.name !== 'None') {
+        notices.push(makeNotice(`${equipment.name} is applied to effective stats, skills, recovery, and timeline calculations.`, 'good'));
+      }
+      if (consumable.name !== 'None') {
+        notices.push(makeNotice(`${consumable.name} is available as a one-use combat action: ${consumable.effect}.`, 'good'));
+      }
+      if (capPercent > 85) {
+        notices.push(makeNotice('This creature is near the top of its tier and may challenge early creatures from the next tier.', 'good'));
+      } else if (capPercent < 35) {
+        notices.push(makeNotice('This creature is low within its tier and should struggle against trained peers.', 'warn'));
+      }
+      if (statValues.EVA >= tier.maxStat * 0.85) {
+        notices.push(makeNotice('EVA is high, but hit chance remains clamped to at least 10%.', 'good'));
+      }
+      if (skills.some((skill) => skill.att <= 40)) {
+        notices.push(makeNotice('Fast skills may create back-to-back actions on the timeline, especially with high SPD.', 'good'));
+      }
+      if (!notices.length) {
+        notices.push(makeNotice('No obvious combat setup warnings for this creature.', 'good'));
+      }
+      document.querySelector('#notices').innerHTML = notices.join('');
+
+      const exported = {
+        id: creatureName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''),
+        name: creatureName,
+        species: document.querySelector('#species').value,
+        notes: document.querySelector('#notes').value,
+        tier: tierNumber,
+        tierName: tier.name,
+        type: creatureType.name,
+        signatureAbility: creatureType.ability,
+        innateTalent: talent,
+        baseStats,
+        effectiveStats: statValues,
+        equipment,
+        consumable,
+        resources: {
+          currentHp,
+          maxHp: statValues.HP,
+          currentSp,
+          maxSp: statValues.SP,
+          turnStartSpRecoveryPercent,
+          turnStartSpRecovery: Number((statValues.SP * (turnStartSpRecoveryPercent / 100)).toFixed(2)),
+          basicActionSpRecoveryPercent,
+          basicActionSpRecovery: Number((statValues.SP * (basicActionSpRecoveryPercent / 100)).toFixed(2)),
+          explorationSpCapPercent,
+          explorationSpCapValue: Math.round(statValues.SP * (explorationSpCapPercent / 100))
+        },
+        timeline: {
+          nextActionAt,
+          basicAttackDelay: basics.basicAttack.actionDelay,
+          basicDefenseDelay: basics.basicDefense.actionDelay
+        },
+        basicActions: basics,
+        skills,
+        combatProbe: {
+          selectedSkill: selectedSkill.name,
+          defenderType,
+          defenderPdef,
+          defenderSdef,
+          defenderEva,
+          typeEffectiveness: typeEffectiveness(defenderType, selectedSkill.type),
+          averageDamage: probeDamage,
+          hitChance: Number(probeHit.toFixed(2))
+        }
+      };
+
+      document.querySelector('#exportJson').textContent = JSON.stringify(exported, null, 2);
+    }
+
+    populateOptions();
+    buildStatControls();
+    buildSkillRows();
+    tierSelect.value = '2';
+    typeSelect.value = 'Aerial';
+    document.querySelector('#defenderType').value = 'Oceanic';
+    document.querySelector('#defenderTier').value = '2';
+    document.querySelector('#positiveTalent').value = 'SPD';
+    document.querySelector('#negativeTalent').value = 'PDEF';
+    resetStatsForTier();
+    resetSkillsForTier();
+    updateDefenderDefaults();
+    document.querySelector('#resetSkills').addEventListener('click', () => {
+      resetSkillsForTier();
+      update();
+    });
+    form.addEventListener('input', (event) => {
+      syncStatInputs(event);
+      update();
+    });
+    form.addEventListener('change', (event) => {
+      if (event.target.id === 'tier') {
+        resetStatsForTier();
+        resetSkillsForTier();
+      }
+      if (event.target.id === 'type') {
+        resetSkillsForTier();
+      }
+      if (event.target.id === 'defenderTier') {
+        updateDefenderDefaults();
+      }
+      update();
+    });
+    update();
+  </script>
+</body>
+</html>
